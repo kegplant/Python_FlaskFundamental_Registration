@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Form Test Index</title>
+        <title>Registration Index</title>
         <style>
             label{
                 display:block;
@@ -12,26 +12,34 @@
         <form action='/process' method='post'>
             <label>
                 email
-                <input type='text' name='eml'>
+                <input type='text' name='eml' value='abc@cde.com'>
             </label>
             <label>
-                    First Name:
-                    <input type='text' name='first_name'>
+                First Name:
+                <input type='text' name='first_name' value='S'>
             </label>
             <label>
-                    Last Name:
-                    <input type='text' name='last_name'>
+                Last Name:
+                <input type='text' name='last_name' value='W'>
             </label>      
             <label>
-                    Password:
-                    <input type='password' name='password'>
+                Password:
+                <input type='password' name='password' value='abcDEF23ff'>
             </label>
             <label>
-                    Confirm Password:
-                    <input type='password' name='password2'>
+                Confirm Password:
+                <input type='password' name='password2' value='abcDEF23ff'>
             </label>
-
             <button>submit</button>
         </form>
+        <p>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{message}}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </p>
     </body>
 </html>
