@@ -25,6 +25,8 @@ def loggedIn():
         session['loggedIn']
     except:
         session['loggedIn']=False
+    if session['loggedIn']==False:
+        session['user_ID']=-1
     return session['loggedIn']
 
 # our index route will handle rendering our form
@@ -34,6 +36,7 @@ def index():
     return render_template('index.html')
 @app.route('/process', methods=['POST'])
 def process(): 
+    status=loggedIn()
     if request.form['type']=='log in':
         flash('loggin in...')
         for key,value in request.form.items():
@@ -46,9 +49,24 @@ def process():
         if len(request.form['password'])<8:
             flash('Password must be 8 or more letters long!')
             return redirect('/')
-
-
+        email = request.form['eml']
+        password = request.form['password']
+        user_query = "SELECT * FROM users WHERE users.email = :email LIMIT 1"
+        query_data = {'email': email}
+        user = mysql.query_db(user_query, query_data)
+        if len(user) != 0:
+            encrypted_password = md5.new(password + user[0]['salt']).hexdigest()
+            if user[0]['password'] == encrypted_password:
+                flash('Successfully logged in')
+                session['loggedIn']=True
+                session['user_ID']=user[0]['id']
+                return redirect('/result')
+            else:
+                flash('invalid password!')
+        else:
+            flash('invalid email!')
         return redirect('/')
+
     elif request.form['type'] != 'register':
         flash('wrong choice!')
         return redirect('/')
@@ -61,6 +79,9 @@ def process():
     # if not (request.form['first_name'].isalpha() and request.form['last_name'].isalpha()):
     #     flash('First and Last Names are letters only!')
     #     return redirect('/')
+    if not (len(request.form['first_name'])>1 and len(request.form['last_name'])>1):
+        flash('First and Last Names must be at least 2 characters long!')
+        return redirect('/')
     if len(request.form['password'])<8:
         flash('Password must be 8 or more letters long!')
         return redirect('/')
@@ -73,12 +94,11 @@ def process():
     # if (not any(c.isupper() for c in request.form['password'])) or (not any(c.isdigit() for c in request.form['password'])):
     #     flash('Password must have at least one capital letter and one number!')
     #     return redirect('/')
-    
+
     # today=str(datetime.date.today())
     # if (today<request.form['bday']):
     #     flash('B-day must not be in the future!')
     #     return redirect('/')
-
     
     first_name=request.form['first_name']
     email=request.form['eml']
@@ -94,9 +114,13 @@ def process():
     query_data = { 'first_name': first_name, 'email': email, 'hashed_pw': hashed_pw, 'salt': salt}
     # print insert_query
     # print query_data
-    mysql.query_db(insert_query,query_data)
+    session['user_ID']=mysql.query_db(insert_query,query_data)
     flash('Thanks for submitting your information!')
 
+    return redirect('/result')
+@app.route('/result')
+def result():
+    status=loggedIn()
     return render_template('result.html')
 @app.route('/log_out')
 def logOut():

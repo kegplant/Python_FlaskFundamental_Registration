@@ -10,6 +10,7 @@
     </head>
     <body>
         <p>logged in: {{session['loggedIn']}}</p>
+        <p>user ID: {{session['user_ID']}}</p>
         <form action='/log_out'><button>log out</button></form>
         <form action='/process' method='post'>
             <label>
@@ -32,10 +33,10 @@
                 Confirm Password:
                 <input type='password' name='password2' value='abcDEF23ff'>
             </label>
-            <label>
+            <!-- <label>
                 Birthday:
                 <input type='date' name='bday'>
-            </label>
+            </label> -->
             <input type='hidden' name='type' value='register'>
             <button>submit</button>
         </form>
