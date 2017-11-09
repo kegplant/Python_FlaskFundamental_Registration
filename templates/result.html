@@ -7,10 +7,19 @@
         <!-- <link rel="stylesheet" href={{url_for('static',filename='style.css')}}> -->
     </head>
     <body>
-        <p>Email: {{info['eml']}}</p>
-        <p>First Name: {{info.first_name}}</p>
-        <p>Last Name: {{info.last_name}}</p>
-        <p>Password: {{info.password}}</p>
-        <p>conform: {{info.password2}} </p>
+        <div>
+            <p>logged in: {{session['loggedIn']}}</p>
+            <form action='/log_out'><button>log out</button></form>
+        </div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{message}}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action='/'>
+            <button>Add More Users</button>
+        </form>
     </body>
 </html>

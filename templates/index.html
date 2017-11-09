@@ -9,6 +9,8 @@
         <!-- <link rel="stylesheet" href={{url_for('static',filename='style.css')}}> -->
     </head>
     <body>
+        <p>logged in: {{session['loggedIn']}}</p>
+        <form action='/log_out'><button>log out</button></form>
         <form action='/process' method='post'>
             <label>
                 email
@@ -32,9 +34,22 @@
             </label>
             <label>
                 Birthday:
-                <input type='date' name='bday' value='2017-10-11'>
+                <input type='date' name='bday'>
             </label>
+            <input type='hidden' name='type' value='register'>
             <button>submit</button>
+        </form>
+        <form action='/process' method='post'>
+            <label>
+                email
+                <input type='text' name='eml' value='abc@cde.com'>
+            </label>     
+            <label>
+                Password:
+                <input type='password' name='password' value='abcDEF23ff'>
+            </label>
+            <input type='hidden' name='type' value='log in'>
+            <button>log in</button>
         </form>
         <p>
             {% with messages = get_flashed_messages() %}
